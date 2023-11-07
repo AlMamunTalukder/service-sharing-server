@@ -28,8 +28,19 @@ async function run() {
     const repairServiceCollection = client
       .db("repair-service")
       .collection("services");
+    const bookingServiceCollection = client
+      .db("repair-service")
+      .collection("purchase");
 
     //Alls CRUD Operations
+    //insert
+    app.post("/services", async (req, res) => {
+      const newServices = req.body;
+      console.log("New services", newServices);
+      const result = await repairServiceCollection.insertOne(newServices);
+      res.send(result);
+    });
+
     //get
     app.get("/services", async (req, res) => {
       const cursor = repairServiceCollection.find();
@@ -46,6 +57,15 @@ async function run() {
       res.send(result);
       console.log(id);
     });
+
+    //insert data in new db collection purchase
+    app.post("/purchases", async (req, res) => {
+      const newPurchase = req.body;
+      console.log("Purchase ", newPurchase);
+      const result = await bookingServiceCollection.insertOne(newPurchase);
+      res.send(result);
+    });
+
     // app.get("/services/:id", async (req, res) => {
     //   const id = req.params.id;
     //   const query = { _id: new ObjectId(id) };
