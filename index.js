@@ -47,6 +47,14 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    //get via email
+    app.get("/services/:email", async (req, res) => {
+      const providerEmail = req.params.email;
+      const result = await repairServiceCollection
+        .find({ providerEmail })
+        .toArray();
+      res.send(result);
+    });
 
     //for show details
 
@@ -57,6 +65,13 @@ async function run() {
       res.send(result);
       console.log(id);
     });
+    //delete
+    app.delete("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await repairServiceCollection.deleteOne(query);
+      res.send(result);
+    });
 
     //insert data in new db collection purchase
     app.post("/purchases", async (req, res) => {
@@ -66,17 +81,26 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/services/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
+    //for get data
+    //get via email
 
-    // const options = {
-    //   projection: { title: 1, price: 1, service_id: 1, img: 1 },
-    // }; // this is for finding specific data from db
+    app.get("/purchases/:email", async (req, res) => {
+      const userEmail = req.params.email;
+      const result = await bookingServiceCollection
+        .find({ userEmail })
+        .toArray();
+      res.send(result);
+    });
 
-    //   const result = await serviceCollection.findOne(query, options);
-    //   res.send(result);
-    // });
+    app.get("/purchases/:email", async (req, res) => {
+      const providerEmail = req.params.email;
+      const result = await bookingServiceCollection
+        .find({ providerEmail })
+        .toArray();
+      res.send(result);
+    });
+
+    //delete
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
