@@ -43,16 +43,7 @@ async function run() {
 
     //get
     app.get("/services", async (req, res) => {
-      const cursor = repairServiceCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-    //get via email
-    app.get("/services/:email", async (req, res) => {
-      const providerEmail = req.params.email;
-      const result = await repairServiceCollection
-        .find({ providerEmail })
-        .toArray();
+      const result = await repairServiceCollection.find().toArray();
       res.send(result);
     });
 
@@ -65,6 +56,45 @@ async function run() {
       res.send(result);
       console.log(id);
     });
+
+    //get via email
+    app.get("/services/:email", async (req, res) => {
+      const providerEmail = req.params.email;
+      const result = await repairServiceCollection
+        .find({ providerEmail })
+        .toArray();
+      res.send(result);
+    });
+
+    //update
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await repairServiceCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.put("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upset: true };
+      const updateService = req.body;
+      const service = {
+        $set: {
+          serviceName: updateService.serviceName,
+          serviceImage: updateService.photo,
+          servicePrice: updateService.price,
+          serviceDescription: updateService.serviceDescription,
+        },
+      };
+      const result = await repairServiceCollection.updateOne(
+        filter,
+        service,
+        options
+      );
+      res.send(result);
+    });
+
     //delete
     app.delete("/services/:id", async (req, res) => {
       const id = req.params.id;
@@ -83,7 +113,7 @@ async function run() {
 
     //for get data
     //get via email
-
+    //useremail for booking my service
     app.get("/purchases/:email", async (req, res) => {
       const userEmail = req.params.email;
       const result = await bookingServiceCollection
@@ -92,6 +122,7 @@ async function run() {
       res.send(result);
     });
 
+    //provider email for pending work
     app.get("/purchases/:email", async (req, res) => {
       const providerEmail = req.params.email;
       const result = await bookingServiceCollection
