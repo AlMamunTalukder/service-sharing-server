@@ -58,7 +58,7 @@ async function run() {
     });
 
     //get via email
-    app.get("/services/:email", async (req, res) => {
+    app.get("/service/:email", async (req, res) => {
       const providerEmail = req.params.email;
       const result = await repairServiceCollection
         .find({ providerEmail })
@@ -82,8 +82,8 @@ async function run() {
       const service = {
         $set: {
           serviceName: updateService.serviceName,
-          serviceImage: updateService.photo,
-          servicePrice: updateService.price,
+          serviceImage: updateService.serviceImage,
+          servicePrice: updateService.servicePrice,
           serviceDescription: updateService.serviceDescription,
         },
       };
@@ -123,10 +123,10 @@ async function run() {
     });
 
     //provider email for pending work
-    app.get("/purchases/:email", async (req, res) => {
+    app.get("/pending-works/:email", async (req, res) => {
       const providerEmail = req.params.email;
       const result = await bookingServiceCollection
-        .find({ providerEmail })
+        .find({ providerEmail, userEmail: { $ne: providerEmail } })
         .toArray();
       res.send(result);
     });
@@ -134,10 +134,10 @@ async function run() {
     //delete
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // await client.db("admin").command({ ping: 1 });
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!"
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
